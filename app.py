@@ -17,7 +17,7 @@ import pandas as pd
 import numpy as np
 
 # Local helper functions
-from helpers import get_image
+from helpers import *
 
 
 # MONGODB_KEY = config("MONGODB_KEY")
@@ -29,7 +29,6 @@ from helpers import get_image
 # rentDB = myclient["Rentearn"]
 # realEstateCollection = rentDB["realEstateCollection"]
 
-# This function
 #
 
 
@@ -57,26 +56,36 @@ def app(activePing=False):
             "zip",
             "latitude",
             "longitude",
+            "rent",
         ]
     ]
 
-    photo_url = df_trimmed["photos"].iloc[0][5]
-
-    image = get_image(photo_url)
-    shrink_factor = st.slider("Pixels", value=250, min_value=50, max_value=500, step=5)
-    shrink = cv.resize(
-        image, (shrink_factor, shrink_factor), interpolation=cv.INTER_AREA
+    max_num_photos = len(df_trimmed["photos"].iloc[0])
+    num_photos = st.slider(
+        "Images to include", min_value=1, max_value=max_num_photos, value=5
     )
-
-    # st.dataframe(shrink / 255)
-    st.image(shrink)
-
     #
+    photo_urls = df_trimmed["photos"].iloc[0][:num_photos]
+
+    # photo_url = df_trimmed["photos"].iloc[0][5]
+    # image = get_image(photo_url)
+    shrink_factor = st.slider("Pixels", value=500, min_value=50, max_value=500, step=5)
+    # shrink = cv.resize(
+    #     image, (shrink_factor, shrink_factor), interpolation=cv.INTER_AREA
+    # )
+    # # st.dataframe(shrink / 255)
+    # st.image(shrink)
+    # st.image(image)
+    # st.dataframe(shrink)
+    combined_image = combine_images(photo_urls, size=shrink_factor)
+
+    st.image(combined_image)
+    # st.write(combined_image.size)
 
 
+#
 # st.dataframe(df)
 
 
 if __name__ == "__main__":
     app(activePing=False)
-    #
