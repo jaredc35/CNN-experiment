@@ -31,16 +31,19 @@ def get_image(url):
 def calculate_max_width(X, size):
 
     # Start with theoretical max
-    max_w = int((size**2 / X) ** 0.5)
+    # max_w = int((size**2 / X) ** 0.5)
+    rows = math.ceil(X**0.5)
 
+    max_w = int(size / rows)
+    return max_w
     # Keep decreasing w until criteria is satisfied
-    while True:
-        if max_w / 4 * X <= size:
-            return max_w
-        max_w -= 1
-        # Break if w would be less than 1
-        if max_w < 1:
-            return 1
+    # while True:
+    #     if max_w / rows * X <= size:
+    #         return max_w
+    #     max_w -= 1
+    #     # Break if w would be less than 1
+    #     if max_w < 1:
+    #         return 1
 
 
 # This function takes in a list of photo URLs and returns
@@ -67,6 +70,8 @@ def combine_images(house_photos, size=500):
     combined = Image.new("L", (size, size), color=255)
 
     # Paste images into the final
+    rows = math.ceil(n**0.5)
+    count = 0
     x_offset = 0
     y_offset = 0
     for img in photos:
@@ -74,8 +79,10 @@ def combine_images(house_photos, size=500):
         region = (x_offset, y_offset, x_offset + w, y_offset + w)
         combined.paste(img, region)
         x_offset += w
-        if x_offset >= size:
+        count += 1
+        if count == rows:
             x_offset = 0
+            count = 0
             y_offset += w
 
     return combined
