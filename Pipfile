@@ -11,6 +11,8 @@ requests = "*"
 python-decouple = "*"
 pandas = "*"
 opencv-python-headless = "*"
+ipykernel = "*"
+pyspark = "*"
 
 [dev-packages]
 
